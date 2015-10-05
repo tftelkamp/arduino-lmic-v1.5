@@ -780,7 +780,11 @@ void radio_irq_handler (u1_t dio) {
             // indicate timeout
             LMIC.dataLen = 0;
         } else {
-            while(1);
+            //while(1);
+            // Do not infinite loop when interrupt triggers unexpectedly
+            // Instead, call ASSERT, which calls hal_failed, so there is at least a
+            // traceable error. (MK)
+            ASSERT(0);
         }
     }
     // go from stanby to sleep

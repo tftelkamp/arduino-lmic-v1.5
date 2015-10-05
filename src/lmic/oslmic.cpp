@@ -85,6 +85,12 @@ void os_setTimedCallback (osjob_t* job, ostime_t time, osjobcb_t cb) {
 // execute jobs from timer and from run queue
 void os_runloop () {
     while(1) {
+        os_runloop_once();
+    }
+}
+
+// execute jobs from timer and from run queue once
+void os_runloop_once () {
         osjob_t* j = NULL;
         hal_disableIRQs();
         // check for runnable jobs
@@ -100,6 +106,5 @@ void os_runloop () {
         hal_enableIRQs();
         if(j) { // run job callback
             j->func(j);
-        }
-    }
+        } 
 }

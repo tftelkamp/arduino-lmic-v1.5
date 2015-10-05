@@ -17,11 +17,14 @@
 // These settings can be adapted to the underlying system.
 // You should not, however, change the lmic.[hc]
 
-
+#include "config.h"
+#include <stdint.h>
 
 //================================================================================
 //================================================================================
 // Target platform as C library
+//
+/*
 typedef unsigned char      bit_t;
 typedef unsigned char      u1_t;
 typedef   signed char      s1_t;
@@ -32,6 +35,26 @@ typedef          int       s4_t;
 typedef unsigned long long u8_t;
 typedef          long long s8_t;
 typedef unsigned int       uint;
+*/
+
+/*
+Instead of using char/short/int/long, use the types inside stdint.h to
+get specific length types. This allows using the library on
+architectures with non-standard integer sizes, such as AVR. (MK)
+*/
+
+typedef uint8_t            bit_t;
+typedef uint8_t            u1_t;
+typedef int8_t             s1_t;
+typedef uint16_t           u2_t;
+typedef int16_t            s2_t;
+typedef uint32_t           u4_t;
+typedef int32_t            s4_t;
+typedef uint64_t           u8_t;
+typedef int64_t            s8_t;
+typedef unsigned int       uint;
+
+
 typedef const char* str_t;
 
 #include <string.h>
@@ -39,7 +62,7 @@ typedef const char* str_t;
 #define EV(a,b,c) /**/
 #define DO_DEVDB(field1,field2) /**/
 #if !defined(CFG_noassert)
-#define ASSERT(cond) if(!(cond)) hal_failed()
+#define ASSERT(cond) if(!(cond)) hal_failed(__FILE__, __LINE__)
 #else
 #define ASSERT(cond) /**/
 #endif
@@ -63,7 +86,7 @@ typedef              u1_t* xref2u1_t;
 #define SIZEOFEXPR(x) sizeof(x)
 
 #define ON_LMIC_EVENT(ev)  onEvent(ev)
-#define DECL_ON_LMIC_EVENT void onEvent(ev_t e)
+#define DECL_ON_LMIC_EVENT void onEvent(ev_t e);
 
 extern u4_t AESAUX[];
 extern u4_t AESKEY[];
@@ -81,6 +104,7 @@ void radio_init (void);
 void radio_irq_handler (u1_t dio);
 void os_init (void);
 void os_runloop (void);
+void os_runloop_once (void);
 
 //================================================================================
 
@@ -98,7 +122,8 @@ void os_runloop (void);
 #error Illegal OSTICKS_PER_SEC - must be in range [10000:64516]. One tick must be 15.5us .. 100us long.
 #endif
 
-typedef s4_t  ostime_t;
+// has been modified from s4_t in LMIC v1.5 to s8_t to prevent overflow
+typedef s8_t  ostime_t;
 
 #if !HAS_ostick_conv
 #define us2osticks(us)   ((ostime_t)( ((s8_t)(us) * OSTICKS_PER_SEC) / 1000000))

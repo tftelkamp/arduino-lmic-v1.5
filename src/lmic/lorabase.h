@@ -60,21 +60,24 @@ enum _dr_eu868_t { DR_SF12=0, DR_SF11, DR_SF10, DR_SF9, DR_SF8, DR_SF7, DR_SF7B,
 enum { DR_DFLTMIN = DR_SF7 };
 enum { DR_PAGE = DR_PAGE_EU868 };
 
-// Default frequency plan for EU 868MHz ISM band
+// Default frequency plan for EU 868MHz ISM band, based on the Semtech global_conf.json defaults,
+// used in The Things Network on Kerlink and other gateways.
+// Subject to change!
+//
 // Bands:
 //  g1 :   1%  14dBm  
 //  g2 : 0.1%  14dBm  
 //  g3 :  10%  27dBm  
 //                 freq             band     datarates
-enum { EU868_F1 = 868100000,      // g1   SF7-12 
-       EU868_F2 = 868300000,      // g1   SF7-12 FSK SF7/250         
-       EU868_F3 = 868500000,      // g1   SF7-12         
-       EU868_F4 = 868850000,      // g2   SF7-12         
-       EU868_F5 = 869050000,      // g2   SF7-12         
-       EU868_F6 = 869525000,      // g3   SF7-12         
-       EU868_J4 = 864100000,      // g2   SF7-12  used during join
-       EU868_J5 = 864300000,      // g2   SF7-12   ditto
-       EU868_J6 = 864500000,      // g2   SF7-12   ditto
+enum { EU868_F1 = 868100000,      // g1   SF7-12
+       EU868_F2 = 868300000,      // g1   SF7-12 SF7/250
+       EU868_F3 = 868500000,      // g1   SF7-12
+       EU868_F4 = 867100000,      // g2   SF7-12
+       EU868_F5 = 867300000,      // g2   SF7-12
+       EU868_F6 = 868800000,      // g2   FSK
+       EU868_J4 = 867500000,      // g2   SF7-12  used during join
+       EU868_J5 = 867700000,      // g2   SF7-12   ditto
+       EU868_J6 = 867900000,      // g2   SF7-12   ditto
 };
 enum { EU868_FREQ_MIN = 863000000,
        EU868_FREQ_MAX = 870000000 };

@@ -535,7 +535,7 @@ static const u4_t iniChannelFreq[12] = {
     EU868_F3|BAND_MILLI, EU868_J6|BAND_MILLI,
     // Default operational frequencies
     EU868_F1|BAND_CENTI, EU868_F2|BAND_CENTI, EU868_F3|BAND_CENTI,
-    EU868_F4|BAND_MILLI, EU868_F5|BAND_MILLI, EU868_F6|BAND_DECI
+    EU868_F4|BAND_MILLI, EU868_F5|BAND_MILLI, EU868_F6|BAND_MILLI
 };
 
 static void initDefaultChannels (bit_t join) {
@@ -550,8 +550,8 @@ static void initDefaultChannels (bit_t join) {
         LMIC.channelDrMap[fu] = DR_RANGE_MAP(DR_SF12,DR_SF7);
     }
     if( !join ) {
-        LMIC.channelDrMap[5] = DR_RANGE_MAP(DR_SF12,DR_SF7);
-        LMIC.channelDrMap[1] = DR_RANGE_MAP(DR_SF12,DR_FSK);
+        LMIC.channelDrMap[5] = 0x0080;  // FSK only! (todo: map this from DR_FSK)
+        LMIC.channelDrMap[1] = DR_RANGE_MAP(DR_SF12,DR_SF7B);
     }
 
     LMIC.bands[BAND_MILLI].txcap    = 1000;  // 0.1%
@@ -562,7 +562,7 @@ static void initDefaultChannels (bit_t join) {
     LMIC.bands[BAND_CENTI].lastchnl = os_getRndU1() % MAX_CHANNELS;
     LMIC.bands[BAND_DECI ].txcap    = 10;    // 10%
     LMIC.bands[BAND_DECI ].txpow    = 27;
-    LMIC.bands[BAND_CENTI].lastchnl = os_getRndU1() % MAX_CHANNELS;
+    LMIC.bands[BAND_DECI].lastchnl = os_getRndU1() % MAX_CHANNELS;
     LMIC.bands[BAND_MILLI].avail = 
     LMIC.bands[BAND_CENTI].avail =
     LMIC.bands[BAND_DECI ].avail = os_getTime();

@@ -59,25 +59,25 @@ void hal_sleep (void);
 /*
  * return 32-bit system time in ticks.
  */
-u4_t hal_ticks (void);
+u8_t hal_ticks (void);
 
 /*
  * busy-wait until specified timestamp (in ticks) is reached.
  */
-void hal_waitUntil (u4_t time);
+void hal_waitUntil (u8_t time);
 
 /*
  * check and rewind timer for target time.
  *   - return 1 if target time is close
  *   - otherwise rewind timer for target time or full period and return 0
  */
-u1_t hal_checkTimer (u4_t targettime);
+u1_t hal_checkTimer (u8_t targettime);
 
 /*
  * perform fatal failure action.
  *   - called by assertions
  *   - action could be HALT or reboot
  */
-void hal_failed (void);
+void hal_failed (const char *file, u2_t line);
 
 #endif // _hal_hpp_
