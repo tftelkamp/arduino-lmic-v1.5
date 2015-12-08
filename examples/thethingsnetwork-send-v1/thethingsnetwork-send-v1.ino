@@ -111,7 +111,7 @@ void do_send(osjob_t* j){
     } else {
       Serial.println("ok");
       // Prepare upstream data transmission at the next possible time.
-      LMIC_setTxData2(1, mydata, sizeof(mydata), 0);
+      LMIC_setTxData2(1, mydata, sizeof(mydata)-1, 0);
     }
     // Schedule a timed job to run at the given timestamp (absolute system time)
     os_setTimedCallback(j, os_getTime()+sec2osticks(120), do_send);
@@ -137,7 +137,7 @@ void setup() {
   // Stop listening for downstream data (periodical reception)
   LMIC_stopPingable();
   // Set data rate and transmit power (note: txpow seems to be ignored by the library)
-  LMIC_setDrTxpow(DR_SF11,14);
+  LMIC_setDrTxpow(DR_SF7,14);
   //
   Serial.flush();
 }

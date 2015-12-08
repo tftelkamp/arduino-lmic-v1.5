@@ -106,14 +106,18 @@ u8_t hal_ticks () {
     return ((u8_t)micros() / US_PER_OSTICK) + addticks;
 }
 
-// Returns the number of ticks until time. Negative values indicate that
-// time has already passed.
-static s4_t delta_time(u8_t time) {
-      return (s4_t)(time - hal_ticks());
+// Returns the number of ticks until time. 
+static u4_t delta_time(u8_t time) {
+      u8_t t = hal_ticks( );
+      s4_t d = time - t;
+      if (d<=1) { return 0; }
+      else {
+        return (u4_t)(time - hal_ticks());
+      }
 }
 
 void hal_waitUntil (u8_t time) {
-    s4_t delta = delta_time(time);
+    u4_t delta = delta_time(time);
     // From delayMicroseconds docs: Currently, the largest value that
     // will produce an accurate delay is 16383.
     while (delta > (16000 / US_PER_OSTICK)) {

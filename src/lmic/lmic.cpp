@@ -530,12 +530,19 @@ void LMIC_setPingable (u1_t intvExp) {
 enum { NUM_DEFAULT_CHANNELS=6 };
 static const u4_t iniChannelFreq[12] = {
     // Join frequencies and duty cycle limit (0.1%)
-    EU868_F1|BAND_MILLI, EU868_J4|BAND_MILLI,
-    EU868_F2|BAND_MILLI, EU868_J5|BAND_MILLI,
-    EU868_F3|BAND_MILLI, EU868_J6|BAND_MILLI,
+    EU868_F1|BAND_MILLI,
+    EU868_F2|BAND_MILLI,
+    EU868_F3|BAND_MILLI,
     // Default operational frequencies
-    EU868_F1|BAND_CENTI, EU868_F2|BAND_CENTI, EU868_F3|BAND_CENTI,
-    EU868_F4|BAND_MILLI, EU868_F5|BAND_MILLI, EU868_F6|BAND_MILLI
+    EU868_F1|BAND_CENTI,
+    EU868_F2|BAND_CENTI,
+    EU868_F3|BAND_CENTI,
+    EU868_F4|BAND_CENTI,
+    EU868_F5|BAND_CENTI,
+    EU868_F6|BAND_CENTI,
+    EU868_F7|BAND_CENTI,
+    EU868_F8|BAND_CENTI,
+    EU868_F9|BAND_CENTI
 };
 
 static void initDefaultChannels (bit_t join) {
@@ -543,9 +550,10 @@ static void initDefaultChannels (bit_t join) {
     os_clearMem(&LMIC.channelDrMap, sizeof(LMIC.channelDrMap));
     os_clearMem(&LMIC.bands, sizeof(LMIC.bands));
 
-    LMIC.channelMap = 0x3F;
-    u1_t su = join ? 0 : 6;
-    for( u1_t fu=0; fu<6; fu++,su++ ) {
+    LMIC.channelMap = 0x1FF;
+    u1_t su = join ? 0 : 3;
+    u1_t num = join ? 3 : 9;
+    for( u1_t fu=0; fu<num; fu++,su++ ) {
         LMIC.channelFreq[fu]  = iniChannelFreq[su];
         LMIC.channelDrMap[fu] = DR_RANGE_MAP(DR_SF12,DR_SF7);
     }
@@ -563,8 +571,8 @@ static void initDefaultChannels (bit_t join) {
     LMIC.bands[BAND_DECI ].txcap    = 10;    // 10%
     LMIC.bands[BAND_DECI ].txpow    = 27;
     LMIC.bands[BAND_DECI].lastchnl = os_getRndU1() % MAX_CHANNELS;
-    LMIC.bands[BAND_MILLI].avail = 
-    LMIC.bands[BAND_CENTI].avail =
+    LMIC.bands[BAND_MILLI].avail = os_getTime();
+    LMIC.bands[BAND_CENTI].avail = os_getTime();
     LMIC.bands[BAND_DECI ].avail = os_getTime();
 }
 
@@ -1581,9 +1589,12 @@ static void buildDataFrame (void) {
         }
         LMIC.frame[end] = LMIC.pendTxPort;
         os_copyMem(LMIC.frame+end+1, LMIC.pendTxData, dlen);
-        aes_cipher(LMIC.pendTxPort==0 ? LMIC.nwkKey : LMIC.artKey,
-                   LMIC.devaddr, LMIC.seqnoUp-1,
-                   /*up*/0, LMIC.frame+end+1, dlen);
+        if (LMIC.pendTxPort != 223) {  // port 223 unencrypted for testing (TT)
+          aes_cipher(LMIC.pendTxPort==0 ? LMIC.nwkKey : LMIC.artKey,
+                     LMIC.devaddr, LMIC.seqnoUp-1,
+                     /*up*/0, LMIC.frame+end+1, dlen);
+        }
+
     }
     aes_appendMic(LMIC.nwkKey, LMIC.devaddr, LMIC.seqnoUp-1, /*up*/0, LMIC.frame, flen-4);
 
