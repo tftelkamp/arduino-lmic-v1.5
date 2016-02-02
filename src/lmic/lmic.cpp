@@ -541,8 +541,8 @@ static const u4_t iniChannelFreq[12] = {
     EU868_F5|BAND_CENTI,
     EU868_F6|BAND_CENTI,
     EU868_F7|BAND_CENTI,
-    EU868_F8|BAND_CENTI,
-    EU868_F9|BAND_CENTI
+    EU868_F8|BAND_MILLI,
+    EU868_F9|BAND_MILLI
 };
 
 static void initDefaultChannels (bit_t join) {
@@ -558,8 +558,8 @@ static void initDefaultChannels (bit_t join) {
         LMIC.channelDrMap[fu] = DR_RANGE_MAP(DR_SF12,DR_SF7);
     }
     if( !join ) {
-        LMIC.channelDrMap[5] = 0x0080;  // FSK only! (todo: map this from DR_FSK)
-        LMIC.channelDrMap[1] = DR_RANGE_MAP(DR_SF12,DR_SF7B);
+        LMIC.channelDrMap[8] = DR_RANGE_MAP(DR_FSK,DR_FSK);    // FSK only
+        LMIC.channelDrMap[1] = DR_RANGE_MAP(DR_SF12,DR_SF7B);  // SF7-12 and SF7BW250
     }
 
     LMIC.bands[BAND_MILLI].txcap    = 1000;  // 0.1%

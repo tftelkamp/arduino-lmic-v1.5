@@ -65,6 +65,7 @@ enum { DR_PAGE = DR_PAGE_EU868 };
 // Subject to change!
 //
 // Bands:
+//  g  :   1%  14dBm
 //  g1 :   1%  14dBm  
 //  g2 : 0.1%  14dBm  
 //  g3 :  10%  27dBm  
@@ -72,24 +73,24 @@ enum { DR_PAGE = DR_PAGE_EU868 };
 enum { EU868_F1 = 868100000,      // g1   SF7-12           used during join
        EU868_F2 = 868300000,      // g1   SF7-12 SF7/250   ditto
        EU868_F3 = 868500000,      // g1   SF7-12           ditto
-       EU868_F4 = 867100000,      // g2   SF7-12
-       EU868_F5 = 867300000,      // g2   SF7-12
-       EU868_F6 = 868800000,      // g2   FSK
-       EU868_F7 = 867500000,      // g2   SF7-12  
-       EU868_F8 = 867700000,      // g2   SF7-12   
-       EU868_F9 = 867900000,      // g2   SF7-12   
+       EU868_F4 = 867100000,      // g    SF7-12
+       EU868_F5 = 867300000,      // g    SF7-12
+       EU868_F6 = 867500000,      // g    SF7-12
+       EU868_F7 = 867700000,      // g    SF7-12  
+       EU868_F8 = 867900000,      // g    SF7-12   
+       EU868_F9 = 868800000,      // g2   FSK   
        EU868_DN = 869525000,      // g3   Downlink
 };
 enum { EU868_FREQ_MIN = 863000000,
        EU868_FREQ_MAX = 870000000 };
 
-enum { CHNL_PING         = 10 };
+enum { CHNL_PING         = 9 };
 enum { FREQ_PING         = EU868_DN };  // default ping freq
 enum { DR_PING           = SF9 };       // default ping DR
-enum { CHNL_DNW2         = 10 };
+enum { CHNL_DNW2         = 9 };
 enum { FREQ_DNW2         = EU868_DN };
 enum { DR_DNW2           = DR_SF9 };
-enum { CHNL_BCN          = 10 };
+enum { CHNL_BCN          = 9 };
 enum { FREQ_BCN          = EU868_DN };
 enum { DR_BCN            = DR_SF9 };
 enum { AIRTIME_BCN       = 144384 };  // micros
