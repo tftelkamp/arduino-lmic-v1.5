@@ -117,7 +117,7 @@
 // #define RegAgcThresh3                              0x46 // common
 // #define RegPllHop                                  0x4B // common
 // #define RegTcxo                                    0x58 // common
-#define RegPaDac                                   0x5A // common
+#define RegPaDac                                   0x4D // sx1276
 // #define RegPll                                     0x5C // common
 // #define RegPllLowPn                                0x5E // common
 // #define RegFormerTemp                              0x6C // common
@@ -406,7 +406,11 @@ static void configPower () {
         pw = 2;
     }
     // check board type for BOOST pin
-    writeReg(RegPaConfig, (u1_t)(0x80|(pw&0xf)));
+    #ifdef CFG_rfo     
+      writeReg(RegPaConfig, (u1_t)(0x70|(pw&0xf)));
+    #else
+      writeReg(RegPaConfig, (u1_t)(0x80|((pw-2)&0xf)));
+    #endif
     writeReg(RegPaDac, readReg(RegPaDac)|0x4);
 
 #elif CFG_sx1272_radio
@@ -417,7 +421,12 @@ static void configPower () {
     } else if(pw < 2) {
         pw = 2;
     }
-    writeReg(RegPaConfig, (u1_t)(0x80|(pw-2)));
+    #ifdef CFG_rfo
+      writeReg(RegPaConfig, (u1_t)(0x00|(pw+1)));
+    #else
+      writeReg(RegPaConfig, (u1_t)(0x80|(pw-2)));
+    #endif
+
 #else
 #error Missing CFG_sx1272_radio/CFG_sx1276_radio
 #endif /* CFG_sx1272_radio */

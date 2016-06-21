@@ -86,10 +86,10 @@ enum { EU868_FREQ_MIN = 863000000,
 
 enum { CHNL_PING         = 9 };
 enum { FREQ_PING         = EU868_DN };  // default ping freq
-enum { DR_PING           = SF9 };       // default ping DR
+enum { DR_PING           = DR_SF9 };       // default ping DR
 enum { CHNL_DNW2         = 9 };
 enum { FREQ_DNW2         = EU868_DN };
-enum { DR_DNW2           = DR_SF9 };
+enum { DR_DNW2           = DR_SF12 };
 enum { CHNL_BCN          = 9 };
 enum { FREQ_BCN          = EU868_DN };
 enum { DR_BCN            = DR_SF9 };
@@ -115,6 +115,16 @@ enum _dr_us915_t { DR_SF10=0, DR_SF9, DR_SF8, DR_SF7, DR_SF8C, DR_NONE,
 enum { DR_DFLTMIN = DR_SF8C };
 enum { DR_PAGE = DR_PAGE_US915 };
 
+#ifdef CFG_aus915
+// Default frequency plan for AUS 915MHz
+enum { US915_125kHz_UPFBASE = 915200000,
+       US915_125kHz_UPFSTEP =    200000,
+       US915_500kHz_UPFBASE = 915900000,
+       US915_500kHz_UPFSTEP =   1600000,
+       US915_500kHz_DNFBASE = 923300000,
+       US915_500kHz_DNFSTEP =    600000
+};
+#else
 // Default frequency plan for US 915MHz
 enum { US915_125kHz_UPFBASE = 902300000,
        US915_125kHz_UPFSTEP =    200000,
@@ -123,6 +133,8 @@ enum { US915_125kHz_UPFBASE = 902300000,
        US915_500kHz_DNFBASE = 923300000,
        US915_500kHz_DNFSTEP =    600000
 };
+#endif
+
 enum { US915_FREQ_MIN = 902000000,
        US915_FREQ_MAX = 928000000 };
 

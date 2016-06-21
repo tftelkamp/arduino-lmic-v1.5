@@ -529,10 +529,10 @@ void LMIC_setPingable (u1_t intvExp) {
 //
 enum { NUM_DEFAULT_CHANNELS=6 };
 static const u4_t iniChannelFreq[12] = {
-    // Join frequencies and duty cycle limit (0.1%)
-    EU868_F1|BAND_MILLI,
-    EU868_F2|BAND_MILLI,
-    EU868_F3|BAND_MILLI,
+    // Join frequencies and duty cycle limit (1%)
+    EU868_F1|BAND_CENTI,
+    EU868_F2|BAND_CENTI,
+    EU868_F3|BAND_CENTI,
     // Default operational frequencies
     EU868_F1|BAND_CENTI,
     EU868_F2|BAND_CENTI,
@@ -684,7 +684,7 @@ static void setBcnRxParams (void) {
 #define setRx1Params() /*LMIC.freq/rps remain unchanged*/
 
 static void initJoinLoop (void) {
-    LMIC.txChnl = os_getRndU1() % 6;
+    LMIC.txChnl = os_getRndU1() % 3;
     LMIC.adrTxPow = 14;
     setDrJoin(DRCHG_SET, DR_SF7);
     initDefaultChannels(1);
@@ -696,12 +696,12 @@ static void initJoinLoop (void) {
 static ostime_t nextJoinState (void) {
     u1_t failed = 0;
 
-    // Try 869.x and then 864.x with same DR
+    // Try 869.x with same DR
     // If both fail try next lower datarate
-    if( ++LMIC.txChnl == 6 )
+    if( ++LMIC.txChnl == 3 )
         LMIC.txChnl = 0;
     if( (++LMIC.txCnt & 1) == 0 ) {
-        // Lower DR every 2nd try (having tried 868.x and 864.x with the same DR)
+        // Lower DR every 2nd try (having tried 868.x with the same DR)
         if( LMIC.datarate == DR_SF12 )
             failed = 1; // we have tried all DR - signal EV_JOIN_FAILED
         else
@@ -737,9 +737,23 @@ static ostime_t nextJoinState (void) {
 
 
 static void initDefaultChannels (void) {
+#ifdef CHNL_HYBRID
+    int idx = CHNL_HYBRID >> 1;
+    LMIC.channelMap[0] = 0x0000;
+    LMIC.channelMap[1] = 0x0000;
+    LMIC.channelMap[2] = 0x0000;
+    LMIC.channelMap[3] = 0x0000;
+    if (CHNL_HYBRID & 1)
+        LMIC.channelMap[idx] = 0xff00;
+    else
+        LMIC.channelMap[idx] = 0x00ff;   
+    LMIC.channelMap[4] = 1 << CHNL_HYBRID;
+    //LMIC.txpow_limit = 20;
+#else
     for( u1_t i=0; i<4; i++ )
-        LMIC.channelMap[i] = 0xFFFF;
+    LMIC.channelMap[i] = 0xFFFF;
     LMIC.channelMap[4] = 0x00FF;
+#endif
 }
 
 static u4_t convFreq (xref2u1_t ptr) {
@@ -761,7 +775,7 @@ bit_t LMIC_setupChannel (u1_t chidx, u4_t freq, u2_t drmap, s1_t band) {
 
 void LMIC_disableChannel (u1_t channel) {
     if( channel < 72+MAX_XCHANNELS )
-        LMIC.channelMap[channel/4] &= ~(1<<(channel&0xF));
+        LMIC.channelMap[channel>>4] &= ~(1<<(channel&0xF));
 }
 
 static u1_t mapChannels (u1_t chpage, u2_t chmap) {
@@ -782,10 +796,20 @@ static void updateTx (ostime_t txbeg) {
     u1_t chnl = LMIC.txChnl;
     if( chnl < 64 ) {
         LMIC.freq = US915_125kHz_UPFBASE + chnl*US915_125kHz_UPFSTEP;
-        LMIC.txpow = 30;
+        //LMIC.txpow = 30;
+        #ifdef CHNL_HYBRID
+            LMIC.txpow = 21;
+        #else
+            LMIC.txpow = 30;
+        #endif
         return;
     }
-    LMIC.txpow = 26;
+    //LMIC.txpow = 26;
+    #ifdef CHNL_HYBRID
+        LMIC.txpow = 21;
+    #else
+        LMIC.txpow = 26;
+    #endif
     if( chnl < 64+8 ) {
         LMIC.freq = US915_500kHz_UPFBASE + (chnl-64)*US915_500kHz_UPFSTEP;
     } else {
@@ -842,7 +866,7 @@ static void setBcnRxParams (void) {
 
 static void initJoinLoop (void) {
     LMIC.chRnd = 0;
-    LMIC.txChnl = 0;
+    LMIC.txChnl = 8;  // Band 2 now, need to fix! (TT)
     LMIC.adrTxPow = 20;
     ASSERT((LMIC.opmode & OP_NEXTCHNL)==0);
     LMIC.txend = os_getTime();

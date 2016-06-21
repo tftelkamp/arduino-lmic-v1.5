@@ -7,8 +7,13 @@
 
 #define CFG_eu868 1
 //#define CFG_us915 1
+//#define CFG_aus915 1
+//#define CHNL_HYBRID 1
+
 #define CFG_sx1272_radio 1
 //#define CFG_sx1276_radio 1
+
+//#define CFG_rfo 1
 
 // 50 μs per tick
 #define US_PER_OSTICK 50
