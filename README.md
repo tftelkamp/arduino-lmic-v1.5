@@ -1,3 +1,17 @@
+*** IMPORTANT ***
+
+Please note this repository is deprecated.
+
+For LMiC 1.5 on Arduino please use:
+
+  https://github.com/matthijskooijman/arduino-lmic
+
+All future development will go into that repository.
+
+
+
+
+
 Arduino-LMIC-v1.5 library
 =========================
 This repository contains the IBM LMIC (LoraMAC-in-C) v1.5 library, 
